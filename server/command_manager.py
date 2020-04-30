@@ -2,6 +2,8 @@ import config
 import constants
 import struct
 import threading
+import json
+import users_data
 
 
 def handle_command(message):
@@ -12,16 +14,17 @@ def handle_command(message):
     # get the function of a specific command
     cmd_func = select_command(command)
 
+    args = None
     # if there is args of the command
     if (len(message) > 1):
-        args = str(message[1:], config.ENCODING)
+        args = message[1:].decode(config.ENCODING)
         debug_message(f'Content: {args}')
 
     try:
         response = cmd_func(args)
     except:
         debug_message('Wrong command')
-        response = create_error_response(constants.INCORRECT_COMMAND)
+        response = create_response(constants.INCORRECT_COMMAND)
 
     return response
 
@@ -37,7 +40,7 @@ def select_command(command):
     switcher = {
         constants.CMD_PING: func_ping,
         constants.CMD_ECHO: func_echo,
-        constants.CMD_LIST: func_login,
+        constants.CMD_LOGIN: func_login,
         constants.CMD_LIST: func_list,
         constants.CMD_MSG : func_msg,
         constants.CMD_FILE: func_file,
@@ -68,7 +71,50 @@ def echo(args=None):
 
 
 def login(args=None):
-    print('login')
+    debug_message('login')
+    debug_message(users_data.AUTHORIZED_USERS)
+    
+    if not (args):
+        return create_response(constants.WRONG_PARAMS)
+        
+    userdata = json.loads(args)
+    if not (('login' in userdata) and ('password' in userdata)):
+        return create_response(constants.WRONG_PARAMS)
+
+    registered = False
+    auth_success = False
+
+    # check if user is registered
+    for user in users_data.REGISTERED_USERS:
+        if (userdata['login'] == user['login']):
+            registered = True
+            if (userdata['password'] == user['password']):
+                auth_success = True
+            break
+
+    # add new user if not registered
+    if not registered:
+        users_data.REGISTERED_USERS.append(userdata)
+        users_data.AUTHORIZED_USERS.append(userdata)
+        return create_response(constants.CMD_LOGIN_OK_NEW)
+    
+    # if wrong password
+    if not auth_success:
+        return create_response(constants.LOGIN_WRONG_PASSWORD)
+
+    authorized = False
+    # check if user is authorized
+    for user in users_data.AUTHORIZED_USERS:
+        if (userdata['login'] == user['login']):
+            authorized = True
+            break
+    
+    if not authorized:
+        # add new user if not registered
+        users_data.AUTHORIZED_USERS.append(userdata)
+    
+    return create_response(constants.CMD_LOGIN_OK)
+
 
 
 def list_cmd(args=None):
@@ -84,9 +130,9 @@ def file_cmd(args=None):
 
 
 
-def create_error_response(error_code):
-    response_message = struct.pack('b', error_code)
-    return response_message
+def create_response(code):
+    response = struct.pack('b', code)
+    return response
 
 
 

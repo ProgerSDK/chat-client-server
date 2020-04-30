@@ -12,11 +12,11 @@ class RequestHandler(socketserver.BaseRequestHandler):
     def handle(self):
         # get size of user message
         size_of_request = self.request.recv(4)
-        size_of_request = struct.unpack('i', size_of_request)
-        debug_message(f'Size of message: {size_of_request[0]}')
+        size_of_request = struct.unpack('i', size_of_request)[0]
+        debug_message(f'Size of message: {size_of_request}')
         
         # get user request message
-        message = self.request.recv(size_of_request[0])
+        message = self.request.recv(size_of_request)
         
         # and handle command in message
         response = handle_command(message)
