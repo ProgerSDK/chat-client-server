@@ -13,7 +13,7 @@ data = " ".join(sys.argv[1:])
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
     # Connect to server and send data
     sock.connect((config.HOST, config.PORT))
-    ping = constants.CMD_RECEIVE_FILE
+    ping = constants.CMD_PING
 
     ping_message = struct.pack('b', ping)
     message = bytearray('Hello!!!', config.ENCODING)

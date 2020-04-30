@@ -4,17 +4,7 @@ import socketserver
 import time
 import config
 import struct
-
-
-def check_command(message):
-    # get user command from message
-    print(f'Command: {message[0]}')
-
-    # if there is content other than the command
-    if (len(message) > 1):
-        # print(len(message))
-        content = message[1:]
-        print(f'Content: {str(content, config.ENCODING)}')
+from command_manager import *
 
 
 class RequestHandler(socketserver.BaseRequestHandler):
@@ -29,7 +19,7 @@ class RequestHandler(socketserver.BaseRequestHandler):
         # get user message
         message = self.request.recv(size_of_message[0])
         # and check command in message
-        check_command(message)
+        handle_command(message)
 
         # send response
         cur_thread = threading.current_thread()
@@ -37,9 +27,11 @@ class RequestHandler(socketserver.BaseRequestHandler):
         self.request.sendall(response)
 
 
+
 class ThreadedTCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
     allow_reuse_address = True
     pass
+
 
 
 if __name__ == '__main__':
