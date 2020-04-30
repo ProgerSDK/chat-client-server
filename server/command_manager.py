@@ -1,11 +1,13 @@
 import config
 import constants
+import struct
+import threading
 
 
 def handle_command(message):
     # get user command from message
     command = message[0]
-    print(f'Command: {command}')
+    debug_message(f'Command: {command}')
 
     # get the function of a specific command
     cmd_func = select_command(command)
@@ -14,13 +16,15 @@ def handle_command(message):
     if (len(message) > 1):
         # print(len(message))
         args = message[1:]
-        print(f'Content: {str(args, config.ENCODING)}')
+        debug_message(f'Content: {str(args, config.ENCODING)}')
 
     try:
-        cmd_func(args)
+        response = cmd_func(args)
     except:
-        print('Wrong command')
+        debug_message('Wrong command')
+        response = create_error_response(constants.INCORRECT_COMMAND)
 
+    return response
 
 
 def select_command(command):
@@ -50,6 +54,9 @@ def select_command(command):
 
 def ping(args=None):
     print('ping')
+    response_code = constants.CMD_PING_RESPONSE
+    response_message = struct.pack('b', response_code)
+    return response_message
 
 
 def echo(args=None):
@@ -70,3 +77,15 @@ def msg(args=None):
 
 def file_cmd(args=None):
     print('file')
+
+
+
+def create_error_response(error_code):
+    response_message = struct.pack('b', error_code)
+    return response_message
+
+
+
+def debug_message(message):
+    print('-'*35)
+    print(f'|debugging| {threading.current_thread().native_id}: {message}')

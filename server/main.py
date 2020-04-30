@@ -11,20 +11,23 @@ class RequestHandler(socketserver.BaseRequestHandler):
 
     def handle(self):
         # get size of user message
-        size = self.request.recv(4)
-        size_of_message = struct.unpack('i', size)
+        size_of_request = self.request.recv(4)
+        size_of_request = struct.unpack('i', size_of_request)
+        debug_message(f'Size of message: {size_of_request[0]}')
         
-        print(f'\n\nSize of message: {size_of_message[0]}')
+        # get user request message
+        message = self.request.recv(size_of_request[0])
         
-        # get user message
-        message = self.request.recv(size_of_message[0])
-        # and check command in message
-        handle_command(message)
+        # and handle command in message
+        response = handle_command(message)
+
+        # send first size of response
+        self.request.send(len(response))
 
         # send response
-        cur_thread = threading.current_thread()
-        response = bytes("{}: {}".format(cur_thread.name, message), config.ENCODING)
         self.request.sendall(response)
+        # //cur_thread = threading.current_thread()
+        # //response = bytes("{}: {}".format(cur_thread.name, message), config.ENCODING)
 
 
 
@@ -51,7 +54,7 @@ if __name__ == '__main__':
         
         # Exit when user enters something
         while True:
-            if (input('Enter something to exit: -> ')):
+            if (input('Enter something to exit:\n')):
                 break
 
         server.shutdown()
