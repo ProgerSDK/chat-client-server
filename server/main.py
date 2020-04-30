@@ -21,8 +21,9 @@ class RequestHandler(socketserver.BaseRequestHandler):
         # and handle command in message
         response = handle_command(message)
 
-        # send first size of response
-        self.request.send(len(response))
+        # send the response size first
+        size_of_response = struct.pack('i', len(response))
+        self.request.send(size_of_response)
 
         # send response
         self.request.sendall(response)

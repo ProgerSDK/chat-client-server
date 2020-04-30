@@ -12,11 +12,10 @@ def handle_command(message):
     # get the function of a specific command
     cmd_func = select_command(command)
 
-    # if there is content other than the command
+    # if there is args of the command
     if (len(message) > 1):
-        # print(len(message))
-        args = message[1:]
-        debug_message(f'Content: {str(args, config.ENCODING)}')
+        args = str(message[1:], config.ENCODING)
+        debug_message(f'Content: {args}')
 
     try:
         response = cmd_func(args)
@@ -46,21 +45,26 @@ def select_command(command):
 
     # Get the function from switcher dictionary
     func = switcher.get(command, "nothing")
-    # // Execute the function
     # Return command function
     return func
 
 
 
 def ping(args=None):
-    print('ping')
+    debug_message('ping')
     response_code = constants.CMD_PING_RESPONSE
-    response_message = struct.pack('b', response_code)
-    return response_message
+    response = struct.pack('b', response_code)
+    return response
 
 
 def echo(args=None):
-    print('echo')
+    debug_message('echo')
+    if (args):
+        response = bytearray(f'ECHO: {args}', config.ENCODING)
+    else:
+        response = bytearray(f'ECHO:', config.ENCODING)
+    
+    return response
 
 
 def login(args=None):
