@@ -43,6 +43,7 @@ def get_cmd_code(command: str) -> int:
             "ping": constants.CMD_PING,
             "echo": constants.CMD_ECHO,
             "login": constants.CMD_LOGIN,
+            "logout": constants.CMD_LOGOUT,
             "list": constants.CMD_LIST,
             "msg": constants.CMD_MSG,
             "file": constants.CMD_FILE,
