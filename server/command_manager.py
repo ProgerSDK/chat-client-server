@@ -76,7 +76,6 @@ def echo(args=None):
 
 def login(args=None):
     debug_message('login')
-    # debug_message(users_data.AUTHORIZED_USERS)
     
     if not (args):
         return create_response(constants.WRONG_PARAMS)
@@ -135,7 +134,23 @@ def logout(args=None):
 
 
 def list_cmd(args=None):
-    print('list')
+    debug_message('list')
+
+    authorized = False
+
+    # check if user is authorized
+    for user in users_data.AUTHORIZED_USERS:
+        if (threading.current_thread().native_id == user['id']):
+            authorized = True
+
+    if authorized:
+        user_list = list(map(lambda x: x['login'], users_data.AUTHORIZED_USERS))
+        response_dict = {'user_list': user_list}
+        response = json.dumps(response_dict)
+        return bytearray(response, config.ENCODING)
+
+    return create_response(constants.LOGIN_FIRST)
+
 
 
 def msg(args=None):
