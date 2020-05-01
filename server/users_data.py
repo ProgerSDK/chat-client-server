@@ -5,5 +5,8 @@ REGISTERED_USERS = [
     },
 ]
 
-
 AUTHORIZED_USERS = []
+
+USERS_MESSAGES = []
+
+USERS_FILES = []

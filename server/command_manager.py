@@ -154,11 +154,69 @@ def list_cmd(args=None):
 
 
 def msg(args=None):
-    print('msg')
+    debug_message('msg')
+
+    if not (args):
+        return create_response(constants.WRONG_PARAMS)
+
+    try:
+        msg_data = json.loads(args)
+    except:
+        return create_response(constants.SERIALIZATION_ERROR)
+ 
+    if not (('receiver' in msg_data) and ('message' in msg_data)):
+        return create_response(constants.WRONG_PARAMS)
+
+    authorized = False
+    username = None
+    # check if user is authorized
+    for user in users_data.AUTHORIZED_USERS:
+        if (threading.current_thread().native_id == user['id']):
+            username = user['login']
+            authorized = True
+
+    if not authorized:
+        return create_response(constants.LOGIN_FIRST)
+   
+    # if authorized
+    msg_data['sender'] = username
+    users_data.USERS_MESSAGES.append(msg_data)
+    debug_message(f'messages: {users_data.USERS_MESSAGES}')
+    return create_response(constants.CMD_MSG_SENT)
+
 
 
 def file_cmd(args=None):
-    print('file')
+    debug_message('file')
+
+    if not (args):
+        return create_response(constants.WRONG_PARAMS)
+
+    try:
+        file_data = json.loads(args)
+    except:
+        return create_response(constants.SERIALIZATION_ERROR)
+ 
+    if not (('receiver' in file_data) and ('filename' in file_data)
+            and ('file_content' in file_data)):
+        return create_response(constants.WRONG_PARAMS)
+
+    authorized = False
+    username = None
+    # check if user is authorized
+    for user in users_data.AUTHORIZED_USERS:
+        if (threading.current_thread().native_id == user['id']):
+            username = user['login']
+            authorized = True
+
+    if not authorized:
+        return create_response(constants.LOGIN_FIRST)
+   
+    # if authorized
+    file_data['sender'] = username
+    users_data.USERS_FILES.append(file_data)
+    debug_message(f'files: {users_data.USERS_FILES}')
+    return create_response(constants.CMD_FILE_SENT)
 
 
 
