@@ -26,6 +26,8 @@ def handle_command(message):
         debug_message('Wrong command')
         response = create_response(constants.INCORRECT_COMMAND)
 
+    debug_message(f'authorized users: {users_data.AUTHORIZED_USERS}')
+
     return response
 
 
@@ -33,6 +35,7 @@ def select_command(command):
     func_ping  = ping
     func_echo  = echo
     func_login = login
+    func_logout = logout
     func_list  = list_cmd
     func_msg   = msg
     func_file  = file_cmd
@@ -41,6 +44,7 @@ def select_command(command):
         constants.CMD_PING: func_ping,
         constants.CMD_ECHO: func_echo,
         constants.CMD_LOGIN: func_login,
+        constants.CMD_LOGOUT: func_logout,
         constants.CMD_LIST: func_list,
         constants.CMD_MSG : func_msg,
         constants.CMD_FILE: func_file,
@@ -72,7 +76,7 @@ def echo(args=None):
 
 def login(args=None):
     debug_message('login')
-    debug_message(users_data.AUTHORIZED_USERS)
+    # debug_message(users_data.AUTHORIZED_USERS)
     
     if not (args):
         return create_response(constants.WRONG_PARAMS)
@@ -95,6 +99,7 @@ def login(args=None):
     # add new user if not registered
     if not registered:
         users_data.REGISTERED_USERS.append(userdata)
+        userdata['id'] = threading.current_thread().native_id
         users_data.AUTHORIZED_USERS.append(userdata)
         return create_response(constants.CMD_LOGIN_OK_NEW)
     
@@ -102,18 +107,30 @@ def login(args=None):
     if not auth_success:
         return create_response(constants.LOGIN_WRONG_PASSWORD)
 
-    authorized = False
     # check if user is authorized
     for user in users_data.AUTHORIZED_USERS:
         if (userdata['login'] == user['login']):
-            authorized = True
-            break
+            return create_response(constants.CMD_LOGIN_OK)
     
-    if not authorized:
-        # add new user if not registered
-        users_data.AUTHORIZED_USERS.append(userdata)
-    
+    # if not authorized:
+    # add new user if not registered
+    userdata['id'] = threading.current_thread().native_id
+    users_data.AUTHORIZED_USERS.append(userdata)
     return create_response(constants.CMD_LOGIN_OK)
+
+
+
+def logout(args=None):
+    debug_message('logout')
+
+    # check if user is authorized
+    for user in users_data.AUTHORIZED_USERS:
+        if (threading.current_thread().native_id == user['id']):
+            users_data.AUTHORIZED_USERS.remove(user)
+            return create_response(constants.CMD_LOGOUT_OK)
+    
+    # if not authorized:
+    return create_response(constants.LOGIN_FIRST)    
 
 
 

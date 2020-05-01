@@ -5,30 +5,46 @@ import time
 import config
 import struct
 from command_manager import *
+import sys
 
 
 class RequestHandler(socketserver.BaseRequestHandler):
 
+    def setup(self):
+        debug_message('{}:{} connected'.format(*self.client_address))
+
     def handle(self):
-        # get size of user message
-        size_of_request = self.request.recv(4)
-        size_of_request = struct.unpack('i', size_of_request)[0]
-        debug_message(f'Size of message: {size_of_request}')
-        
-        # get user request message
-        message = self.request.recv(size_of_request)
-        
-        # and handle command in message
-        response = handle_command(message)
+        while True:
+            # get size of user message
+            size_of_request = self.request.recv(4)
+            
+            # close the socket if the client is closed
+            if not size_of_request: break
+            
+            # unpack size of user message
+            size_of_request = struct.unpack('i', size_of_request)[0]
+            debug_message(f'Size of message: {size_of_request}')
+            
+            # get user request message
+            message = self.request.recv(size_of_request)
+            
+            # and handle command in message
+            response = handle_command(message)
 
-        # send the response size first
-        size_of_response = struct.pack('i', len(response))
-        self.request.send(size_of_response)
+            # send the response size first
+            try:
+                size_of_response = struct.pack('i', len(response))
+            except:
+                response = create_response(constants.SERVER_ERROR)
+                size_of_response = struct.pack('i', len(response))
+            
+            self.request.send(size_of_response)
 
-        # send response
-        self.request.sendall(response)
-        # //cur_thread = threading.current_thread()
-        # //response = bytes("{}: {}".format(cur_thread.name, message), config.ENCODING)
+            # send response
+            self.request.send(response)
+
+    def finish(self):
+        debug_message('{}:{} disconnected'.format(*self.client_address))
 
 
 
@@ -57,5 +73,11 @@ if __name__ == '__main__':
         while True:
             if (input('Enter something to exit:\n')):
                 break
-
+        
+        # while True:
+        #     try:
+        #         time.sleep(1)
+        #     except KeyboardInterrupt:
+        #         break
+        
         server.shutdown()
