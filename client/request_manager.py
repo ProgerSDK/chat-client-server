@@ -2,7 +2,7 @@ def create_request(command: dict) -> bytes:
     pass
 
 
-def select_command(cmd_code: int) -> func:
+def select_command(cmd_code: int):
     pass
 
 

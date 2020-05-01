@@ -1,11 +1,11 @@
-# import sys
 import socket
 import struct
 import config
+import time
+from input_manager import get_command
 from request_manager import create_request
 from response_manager import unpack_response
-from input_manager import *
-import time
+from constants import CMD_EXIT
 
 
 # Create a socket (SOCK_STREAM means a TCP socket)
@@ -14,13 +14,14 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
     sock.connect((config.HOST, config.PORT))
     
     while True:
-        user_input = get_user_input()
-
-        if (user_input.lower() == 'exit'):
+        # get the command number and args of cmd in dict
+        # from user input
+        command = get_command()
+        if (command['cmd_code'] == CMD_EXIT):
+            print('\nShutdown the client...')
             break
         
-        # get the command number and args of cmd in dict
-        command = handle_input(user_input)
+        # get cmd_come to get response
         cmd_code = command['cmd_code']
 
         # then create request using the command

@@ -2,7 +2,7 @@ def unpack_response(cmd_code: int, response: bytes) -> None:
     pass
 
 
-def select_command(cmd_code: int) -> func:
+def select_command(cmd_code: int):
     pass
 
 
