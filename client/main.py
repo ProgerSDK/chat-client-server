@@ -1,35 +1,49 @@
-import sys
+# import sys
 import socket
-import constants
 import struct
-import time
 import config
+from request_manager import create_request
+from response_manager import unpack_response
+from input_manager import *
+import time
 
-
-# Read args from user
-data = " ".join(sys.argv[1:])
 
 # Create a socket (SOCK_STREAM means a TCP socket)
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-    # Connect to server and send data
+    # Connect to server
     sock.connect((config.HOST, config.PORT))
-    ping = constants.CMD_PING
-
-    ping_message = struct.pack('b', ping)
-    message = bytearray('Hello!!!', config.ENCODING)
-    size = struct.pack('i', len(message)+1)
-
-    sock.send(size)
-    time.sleep(1)
-
-    sock.send(ping_message + message)
-    time.sleep(1)
     
-    # Receive data from the server and shut down
-    received = str(sock.recv(1024), config.ENCODING)
+    while True:
+        user_input = get_user_input()
 
-    if (input()):
-        pass
+        if (user_input.lower() == 'exit'):
+            break
+        
+        # get the command number and args of cmd in dict
+        command = handle_input(user_input)
+        cmd_code = command['cmd_code']
 
-print("Sent:     {}".format(data))
-print("Received: {}".format(received)) 
+        # then create request using the command
+        request = create_request(command)
+        
+        # convert query size to bytes (int 4)
+        size_of_request = struct.pack('i', len(request))
+
+        # send the request size first
+        sock.send(size_of_request)
+        time.sleep(0.5)
+
+        # send request
+        sock.send(request)
+        time.sleep(1)
+
+        # get size of server response
+        recv_size = sock.recv(4)
+        # and unpack it
+        recv_size = struct.unpack('i', recv_size)[0]
+
+        # receive data from the server
+        response = sock.recv(recv_size)
+        # and unpack it
+        unpack_response(cmd_code, response)
+    
