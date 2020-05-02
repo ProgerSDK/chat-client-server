@@ -26,7 +26,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
 
         # then create request using the command
         request = create_request(command)
-        print(f'request {request}')
+
         # check for errors
         if is_error(request):
             print('Please retry!\n')
@@ -34,23 +34,22 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
 
         # convert query size to bytes (int 4)
         size_of_request = struct.pack('i', len(request))
-        print(size_of_request)
 
-        # # send the request size first
-        # sock.send(size_of_request)
-        # time.sleep(0.5)
+        # send the request size first
+        sock.send(size_of_request)
+        time.sleep(0.5)
 
-        # # send request
-        # sock.send(request)
-        # time.sleep(1)
+        # send request
+        sock.send(request)
+        time.sleep(1)
 
-        # # get size of server response
-        # recv_size = sock.recv(4)
-        # # and unpack it
-        # recv_size = struct.unpack('i', recv_size)[0]
+        # get size of server response
+        recv_size = sock.recv(4)
+        # and unpack it
+        recv_size = struct.unpack('i', recv_size)[0]
 
-        # # receive data from the server
-        # response = sock.recv(recv_size)
-        # # and unpack it
-        # unpack_response(cmd_code, response)
+        # receive data from the server
+        response = sock.recv(recv_size)
+        # and unpack it
+        unpack_response(cmd_code, response)
     
