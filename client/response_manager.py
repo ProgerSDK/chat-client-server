@@ -119,6 +119,14 @@ def recv_msg(response):
         response_code = unpack_response_code(response)
         if (response_code == constants.CMD_RECEIVE_MSG_EMPTY):
             print('No messages.\n')
+            return
+    
+    response_content = response.decode(config.ENCODING)
+    msg = json.loads(response_content)
+    
+    print('You have a new message!')
+    print(f'From: {msg["sender"]}')
+    print(f'Message: {msg["message"]}')
 
 
 def recv_file(response):
@@ -126,3 +134,11 @@ def recv_file(response):
         response_code = unpack_response_code(response)
         if (response_code == constants.CMD_RECEIVE_FILE_EMPTY):
             print('No files waiting.\n')
+            return
+    
+    response_content = response.decode(config.ENCODING)
+    file_msg = json.loads(response_content)
+    
+    print('You have a new file!')
+    print(f'From: {file_msg["sender"]}')
+    print(f'Filename: {file_msg["filename"]}')

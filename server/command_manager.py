@@ -48,6 +48,8 @@ def select_command(command):
         constants.CMD_LIST: func_list,
         constants.CMD_MSG : func_msg,
         constants.CMD_FILE: func_file,
+        constants.CMD_RECEIVE_MSG: recv_msg,
+        constants.CMD_RECEIVE_FILE: recv_file,
     }
 
     # Get the function from switcher dictionary
@@ -229,3 +231,71 @@ def create_response(code):
 def debug_message(message):
     print('-'*35)
     print(f'|debugging| {threading.current_thread().native_id}: {message}')
+
+
+
+def recv_msg(args=None):
+    authorized = False
+    username = None
+    # check if user is authorized
+    for user in users_data.AUTHORIZED_USERS:
+        if (threading.current_thread().native_id == user['id']):
+            username = user['login']
+            authorized = True
+    
+    if not authorized:
+        return create_response(constants.LOGIN_FIRST)
+
+    # if authorized
+    # check if there is new messages
+    msg = None
+    new_msg = False
+    for message in users_data.USERS_MESSAGES:
+        if (username == message['receiver']):
+            msg = dict(message)
+            users_data.USERS_MESSAGES.remove(message)
+            new_msg = True
+            break
+
+    if (new_msg):
+        response_json = json.dumps(msg)
+        response = bytearray(response_json, config.ENCODING)
+        return response
+    else:
+        return create_response(constants.CMD_RECEIVE_MSG_EMPTY) 
+
+
+
+def recv_file(args=None):
+    authorized = False
+    username = None
+    # check if user is authorized
+    for user in users_data.AUTHORIZED_USERS:
+        if (threading.current_thread().native_id == user['id']):
+            username = user['login']
+            authorized = True
+    
+    if not authorized:
+        return create_response(constants.LOGIN_FIRST)
+
+    debug_message('here')
+
+    # if authorized
+    # check if there is new files
+    file_msg = None
+    new_file = False
+    for file_dict in users_data.USERS_FILES:
+        if (username == file_dict['receiver']):
+            file_msg = dict(file_dict)
+            users_data.USERS_FILES.remove(file_dict)
+            new_file = True
+            break
+
+    debug_message('here1')
+
+    if (new_file):
+        response_json = json.dumps(file_msg)
+        response = bytearray(response_json, config.ENCODING)
+        return response
+    else:
+        return create_response(constants.CMD_RECEIVE_FILE_EMPTY) 
