@@ -23,6 +23,8 @@ def select_command(cmd_code: int):
         constants.CMD_LIST: list_cmd,
         constants.CMD_MSG : msg,
         constants.CMD_FILE: file_cmd,
+        constants.CMD_RECEIVE_MSG: recv_msg,
+        constants.CMD_RECEIVE_FILE: recv_file,
     }
 
     # Get the function from switcher dictionary
@@ -121,4 +123,17 @@ def file_cmd(args=None):
 
 def get_request_code(code: int) -> bytes:
     request = struct.pack('b', code)
+    return request
+
+
+
+def recv_msg(args=None):
+    print('receive msg')
+    request = get_request_code(constants.CMD_RECEIVE_MSG)
+    return request
+
+
+def recv_file(args=None):
+    print('receive file')
+    request = get_request_code(constants.CMD_RECEIVE_FILE)
     return request

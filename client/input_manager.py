@@ -49,6 +49,8 @@ def get_cmd_code(command: str) -> int:
             "file": constants.CMD_FILE,
             "help": constants.CMD_HELP,
             "exit": constants.CMD_EXIT,
+            "recv_msg": constants.CMD_RECEIVE_MSG,
+            "recv_file": constants.CMD_RECEIVE_FILE,
         }
 
     # get the cmd code from switcher dictionary

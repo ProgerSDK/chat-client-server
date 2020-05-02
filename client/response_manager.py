@@ -52,6 +52,8 @@ def select_command(cmd_code: int):
         constants.CMD_LIST: list_cmd,
         constants.CMD_MSG : msg,
         constants.CMD_FILE: file_cmd,
+        constants.CMD_RECEIVE_MSG: recv_msg,
+        constants.CMD_RECEIVE_FILE: recv_file,
     }
 
     # Get the function from switcher dictionary
@@ -109,3 +111,18 @@ def file_cmd(response):
 def unpack_response_code(response: bytes) -> int:
     response_code = struct.unpack('b', response)[0]
     return response_code
+
+
+
+def recv_msg(response):
+    if (len(response) == 1):
+        response_code = unpack_response_code(response)
+        if (response_code == constants.CMD_RECEIVE_MSG_EMPTY):
+            print('No messages.\n')
+
+
+def recv_file(response):
+    if (len(response) == 1):
+        response_code = unpack_response_code(response)
+        if (response_code == constants.CMD_RECEIVE_FILE_EMPTY):
+            print('No files waiting.\n')
