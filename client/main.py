@@ -4,7 +4,7 @@ import config
 import time
 from input_manager import get_command
 from request_manager import create_request
-from response_manager import unpack_response
+from response_manager import unpack_response, is_error
 from constants import CMD_EXIT
 
 
@@ -26,9 +26,15 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
 
         # then create request using the command
         request = create_request(command)
-        
+        print(f'request {request}')
+        # check for errors
+        if is_error(request):
+            print('Please retry!\n')
+            continue
+
         # convert query size to bytes (int 4)
         size_of_request = struct.pack('i', len(request))
+        print(size_of_request)
 
         # # send the request size first
         # sock.send(size_of_request)

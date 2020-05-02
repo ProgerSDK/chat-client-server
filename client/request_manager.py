@@ -1,6 +1,7 @@
 import constants
 import struct
 import config
+import json
 
 
 def create_request(command: dict) -> bytes:
@@ -50,7 +51,20 @@ def echo(args=None):
 def login(args=None):
     print('login')
     request = get_request_code(constants.CMD_LOGIN)
-    return request
+
+    try:
+        login = args[0]
+        password = args[1]
+    except:
+        return get_request_code(constants.WRONG_PARAMS)
+
+    login_dict = {
+        'login': login,
+        'password': password
+    }
+    request_json = json.dumps(login_dict)
+    request_args = bytearray(request_json, config.ENCODING)
+    return request + request_args
 
 
 def logout(args=None):
@@ -68,13 +82,41 @@ def list_cmd(args=None):
 def msg(args=None):
     print('msg')
     request = get_request_code(constants.CMD_MSG)
-    return request
+    
+    try:
+        receiver = args[0]
+        message = ' '.join(args[1:])
+    except:
+        return get_request_code(constants.WRONG_PARAMS)
+
+    msg_dict = {
+        'receiver': receiver,
+        'message': message
+    }
+    request_json = json.dumps(msg_dict)
+    request_args = bytearray(request_json, config.ENCODING)
+    return request + request_args
 
 
 def file_cmd(args=None):
     print('file')
     request = get_request_code(constants.CMD_FILE)
-    return request
+    
+    try:
+        receiver = args[0]
+        filepath = args[1]
+    except:
+        return get_request_code(constants.WRONG_PARAMS)
+
+    file_dict = {
+        'receiver': receiver,
+        'filename': 'filename',
+        'file_content': 'file_content'
+    }
+    request_json = json.dumps(file_dict)
+    request_args = bytearray(request_json, config.ENCODING)
+    return request + request_args
+
 
 
 def get_request_code(code: int) -> bytes:
