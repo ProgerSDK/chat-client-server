@@ -5,21 +5,26 @@ import time
 from input_manager import get_command
 from request_manager import create_request
 from response_manager import unpack_response, is_error
-from constants import CMD_EXIT
+from constants import CMD_EXIT, CMD_LOGOUT
 
 
 # Create a socket (SOCK_STREAM means a TCP socket)
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
     # Connect to server
     sock.connect((config.HOST, config.PORT))
-    
+
+    is_exit = False
     while True:
+        if is_exit:
+            print('\nShutdown the client...')
+            break
+
         # get the command number and args of cmd in dict
         # from user input
         command = get_command()
         if (command['cmd_code'] == CMD_EXIT):
-            print('\nShutdown the client...')
-            break
+            is_exit = True
+            command['cmd_code'] = CMD_LOGOUT
         
         # get cmd_come to get response
         cmd_code = command['cmd_code']
@@ -51,5 +56,5 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
         # receive data from the server
         response = sock.recv(recv_size)
         # and unpack it
-        unpack_response(cmd_code, response)
-    
+        if not is_exit:
+            unpack_response(cmd_code, response)
