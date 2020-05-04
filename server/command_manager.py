@@ -32,22 +32,14 @@ def handle_command(message):
 
 
 def select_command(command):
-    func_ping  = ping
-    func_echo  = echo
-    func_login = login
-    func_logout = logout
-    func_list  = list_cmd
-    func_msg   = msg
-    func_file  = file_cmd
-
     switcher = {
-        constants.CMD_PING: func_ping,
-        constants.CMD_ECHO: func_echo,
-        constants.CMD_LOGIN: func_login,
-        constants.CMD_LOGOUT: func_logout,
-        constants.CMD_LIST: func_list,
-        constants.CMD_MSG : func_msg,
-        constants.CMD_FILE: func_file,
+        constants.CMD_PING: ping,
+        constants.CMD_ECHO: echo,
+        constants.CMD_LOGIN: login,
+        constants.CMD_LOGOUT: logout,
+        constants.CMD_LIST: list_cmd,
+        constants.CMD_MSG : msg,
+        constants.CMD_FILE: file_cmd,
         constants.CMD_RECEIVE_MSG: recv_msg,
         constants.CMD_RECEIVE_FILE: recv_file,
     }
