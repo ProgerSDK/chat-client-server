@@ -143,7 +143,7 @@ def list_cmd(args=None):
 
     if authorized:
         user_list = list(map(lambda x: x['login'], users_data.AUTHORIZED_USERS))
-        response_dict = {'user_list': user_list}
+        response_dict = {'user_list': list(set(user_list))}
         response = json.dumps(response_dict)
         return bytearray(response, config.ENCODING)
 
