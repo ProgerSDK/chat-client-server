@@ -5,7 +5,25 @@ import time
 from input_manager import get_command
 from request_manager import create_request
 from response_manager import unpack_response, is_error
-from constants import CMD_EXIT, CMD_LOGOUT
+from constants import CMD_EXIT, CMD_LOGOUT, CMD_LOGIN
+import constants
+import threading
+import auto_receiver
+
+
+def create_receiver(response, request):
+    response_code = struct.unpack('b', response)[0]
+    
+    if ((response_code == constants.CMD_LOGIN_OK_NEW) 
+        or (response_code == constants.CMD_LOGIN_OK)):
+        
+        # create new thread
+        receiver_thread = threading.Thread(target=auto_receiver.create_receiver, args=(request,))
+
+        # exit the receiver thread when the main thread terminates
+        receiver_thread.daemon = True
+        receiver_thread.start()
+
 
 
 # Create a socket (SOCK_STREAM means a TCP socket)
@@ -13,18 +31,14 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
     # Connect to server
     sock.connect((config.HOST, config.PORT))
 
-    is_exit = False
     while True:
-        if is_exit:
-            print('\nShutdown the client...')
-            break
 
         # get the command number and args of cmd in dict
         # from user input
         command = get_command()
         if (command['cmd_code'] == CMD_EXIT):
-            is_exit = True
-            command['cmd_code'] = CMD_LOGOUT
+            print('\nShutdown the client...')
+            break
         
         # get cmd_come to get response
         cmd_code = command['cmd_code']
@@ -55,6 +69,10 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
 
         # receive data from the server
         response = sock.recv(recv_size)
+        
+        if (cmd_code == CMD_LOGIN):
+            create_receiver(response, request)
+
         # and unpack it
-        if not is_exit:
-            unpack_response(cmd_code, response)
+        unpack_response(cmd_code, response)
+     
