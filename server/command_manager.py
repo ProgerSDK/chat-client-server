@@ -8,7 +8,11 @@ import users_data
 
 def handle_command(message):
     # get user command from message
-    command = message[0]
+    try:
+        command = message[0]
+    except:
+        return create_response(constants.SERVER_ERROR)
+
     debug_message(f'Command: {command}')
 
     # get the function of a specific command
@@ -102,7 +106,7 @@ def login(args=None):
 
     # check if user is authorized
     for user in users_data.AUTHORIZED_USERS:
-        if (userdata['login'] == user['login']):
+        if (threading.current_thread().native_id == user['id']):
             return create_response(constants.CMD_LOGIN_OK)
     
     # if not authorized:
