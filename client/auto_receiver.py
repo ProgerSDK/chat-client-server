@@ -8,8 +8,6 @@ import tkinter as tk
 from client import Client
 
 
-messages_frame = None
-
 def create_receiver(request, frame):
     global messages_frame
     messages_frame = frame
@@ -89,6 +87,7 @@ def list_cmd(response):
 
 
 
+messages_frame = None
 def print_in_messages(message_text):
     # msg_val = f'{msg["sender"]}:\n{msg["message"]}'
     messageVar = tk.Message(messages_frame.scrollable_frame, text=message_text, width=320) 
@@ -109,10 +108,6 @@ def recv_msg(response):
 
     msg_val = f'{msg["sender"]}:\n{msg["message"]}'
     print_in_messages(msg_val)
-    
-    # print('You have a new message!')
-    # print(f'From: {msg["sender"]}')
-    # print(f'Message: {msg["message"]}')
 
 
 def recv_file(response):
@@ -127,7 +122,3 @@ def recv_file(response):
     
     msg_val = f'{file_msg["sender"]}:\nSent a {file_msg["filename"]} file.'
     print_in_messages(msg_val)
-
-    # print('You have a new file!')
-    # print(f'From: {file_msg["sender"]}')
-    # print(f'Filename: {file_msg["filename"]}')
