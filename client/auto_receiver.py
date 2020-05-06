@@ -4,9 +4,14 @@ import time
 import config
 import json
 import socket
+import tkinter as tk
 
+messages_frame = None
 
-def create_receiver(request):
+def create_receiver(request, frame):
+    global messages_frame
+    messages_frame = frame
+
     # Create a socket (SOCK_STREAM means a TCP socket)
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
         # Connect to server
@@ -81,9 +86,14 @@ def unpack_response(cmd_code: int, response: bytes) -> None:
     response_content = response.decode(config.ENCODING)
     msg = json.loads(response_content)
     
-    print('\nYou have a new message!')
-    print(f'From: {msg["sender"]}')
-    print(f'Message: {msg["message"]}')
+    msg_val = f'{msg["sender"]}:\n{msg["message"]}'
+    messageVar = tk.Message(messages_frame.scrollable_frame, text = msg_val, width=320) 
+    # messageVar.config(bg='lightgreen') 
+    messageVar.pack(anchor=tk.W, pady=2, padx=2)
+    
+    # print('\nYou have a new message!')
+    # print(f'From: {msg["sender"]}')
+    # print(f'Message: {msg["message"]}')
     
 
 

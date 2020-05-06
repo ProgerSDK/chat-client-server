@@ -8,7 +8,8 @@ from tkinter import messagebox
 import struct
 import threading
 import auto_receiver
-from tkinter import filedialog
+from tkinter import filedialog, ttk
+from additional_tkinter import ScrollableFrame
 
 
 def create_receiver(response, request):
@@ -18,7 +19,7 @@ def create_receiver(response, request):
         or (response_code == constants.CMD_LOGIN_OK)):
         
         # create new thread
-        receiver_thread = threading.Thread(target=auto_receiver.create_receiver, args=(request,))
+        receiver_thread = threading.Thread(target=auto_receiver.create_receiver, args=(request, messages_frame))
 
         # exit the receiver thread when the main thread terminates
         receiver_thread.daemon = True
@@ -27,7 +28,8 @@ def create_receiver(response, request):
 
 root = Tk()
 root.title('Chat client')
-root.geometry('500x400')
+root.geometry('510x385')
+root['bg'] = 'black'
 
 try:
     client = Client()
@@ -104,8 +106,12 @@ content_frame.pack(anchor=N, fill=BOTH, expand=True, side=LEFT )
 ##################################################################
 # MESSAGES FRAME
 
-messages_frame = Frame(content_frame, bg="orange", height=290)
-messages_frame.pack(anchor=N, fill=X, expand=True , side=TOP)
+# messages_frame = Frame(content_frame, bg="white", height=290, width=360)
+# messages_frame.pack(anchor=N, side=TOP, pady=5, padx=5)
+
+messages_frame = ScrollableFrame(content_frame)
+# messages_frame.config(bg='orange')
+messages_frame.pack(anchor=N, side=TOP, pady=5)
 
 # END of MESSAGES FRAME
 ##################################################################
@@ -129,6 +135,11 @@ def send_msg():
     if is_error(response):
         messagebox.showerror('Sent Message Error', 'Please, try again!', parent=root)
         return
+    
+    msg_val = f'Me -> {receiver_val}:\n{message_val}'
+    messageVar = Message(messages_frame.scrollable_frame, text = msg_val, width=300) 
+    # messageVar.config(bg='lightgreen') 
+    messageVar.pack(anchor=W, pady=2, padx=2)
 
     receiver_entry.delete(0, END)
     message_entry.delete(0, END)
@@ -189,7 +200,7 @@ send_file_btn.grid(row=2, column=2, padx=10)
 
 
 
-root.resizable(False, False)
+# root.resizable(False, False)
 root.mainloop()
 
 
