@@ -26,6 +26,7 @@ def create_receiver(response, request):
 
 root = Tk()
 root.title('Chat client')
+root.geometry('480x400')
 
 
 try:
@@ -62,6 +63,8 @@ top_login = Toplevel()
 top_login.title('Login/Register')
 top_login.attributes('-topmost', 'true')
 top_login.geometry('260x160')
+top_login.resizable(False, False)
+top_login.focus_force()
 
 Label(top_login, text='Login:').grid(row=0, pady=20, padx=5) 
 Label(top_login, text='Password:').grid(row=1,padx=5) 
@@ -77,6 +80,48 @@ button.grid(row=3, column=1, pady=20)
 ##################################################################
 
 
+##################################################################
+# USERS FRAME
+
+frame_users = Frame(root, bg="green", width=130)
+frame_users.pack(anchor=W, fill=Y, expand=False, side=LEFT)  
+
+# END of USERS FRAME
+##################################################################
+
+
+##################################################################
+# CONTENT FRAME
+
+content_frame = Frame(root, bg="orange")
+content_frame.pack(anchor=N, fill=BOTH, expand=True, side=LEFT )
+
+# END of CONTENT FRAME
+##################################################################
+
+
+##################################################################
+# MESSAGES FRAME
+
+messages_frame = Frame(content_frame, bg="orange", height=300)
+messages_frame.pack(anchor=N, fill=X, expand=True , side=TOP)
+
+# END of MESSAGES FRAME
+##################################################################
+
+
+##################################################################
+# SEND FRAME
+
+content_frame = Frame(content_frame, bg="white", height=180)
+content_frame.pack(anchor=S, fill=X, expand=True, side=TOP)
+
+# END of SEND FRAME
+##################################################################
+
+
+
+root.resizable(False, False)
 root.mainloop()
 
 
