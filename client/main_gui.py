@@ -100,6 +100,7 @@ content_frame.pack(anchor=N, fill=BOTH, expand=True, side=LEFT )
 ##################################################################
 
 
+
 ##################################################################
 # MESSAGES FRAME
 
@@ -110,8 +111,48 @@ messages_frame.pack(anchor=N, fill=X, expand=True , side=TOP)
 ##################################################################
 
 
+
 ##################################################################
 # SEND FRAME
+
+def send_msg():
+    receiver_val = receiver_entry.get()
+    message_val = message_entry.get()
+
+    cmd_dict = {
+        'cmd_code': constants.CMD_MSG,
+        'args': [receiver_val, message_val]
+    }
+    request = create_request(cmd_dict)
+    response = client.handle(request)
+    
+    if is_error(response):
+        messagebox.showerror('Sent Message Error', 'Please, try again!', parent=root)
+        return
+
+    receiver_entry.delete(0, END)
+    message_entry.delete(0, END)
+
+
+def send_file():
+    receiver_val = receiver_entry.get()
+    if not filepath_val:
+        messagebox.showerror('Error sent file!', 'Select a file!')
+        return
+
+    cmd_dict = {
+        'cmd_code': constants.CMD_FILE,
+        'args': [receiver_val, filepath_val]
+    }
+    request = create_request(cmd_dict)
+    response = client.handle(request)
+    
+    if is_error(response):
+        messagebox.showerror('Sent Message Error', 'Please, try again!', parent=root)
+        return
+
+    receiver_entry.delete(0, END)
+
 
 send_frame = Frame(content_frame)
 send_frame.pack(anchor=S, fill=X, expand=True, side=TOP)
@@ -123,24 +164,25 @@ receiver_entry = Entry(send_frame)
 message_entry = Entry(send_frame) 
 file_entry = Entry(send_frame) 
 
-receiver_entry.grid(row=0, column=1, ipady=3) 
-message_entry.grid(row=1, column=1, ipady=3)
+receiver_entry.grid(row=0, column=1) 
+message_entry.grid(row=1, column=1)
 
-send_msg_btn = Button(send_frame, text='Send')
+send_msg_btn = Button(send_frame, text='Send', command=send_msg)
 send_msg_btn.grid(row=1, column=2, padx=10)
 
+filepath_val = None
 def sel_file():
-    send_frame.filename = filedialog.askopenfile(title='Select a file')
-    filepath = send_frame.filename.name
-    print(filepath)
+    global filepath_val
+    send_frame.filename = filedialog.askopenfile(title='Select a file') 
+    filepath_val = send_frame.filename.name
+    print(filepath_val)
 
 
-send_file_btn = Button(send_frame, text='Select a file', command=sel_file)
-send_file_btn.grid(row=2, column=1)
+select_file_btn = Button(send_frame, text='Select a file', command=sel_file)
+select_file_btn.grid(row=2, column=1)
 
-send_file_btn = Button(send_frame, text='Send')
+send_file_btn = Button(send_frame, text='Send', command=lambda: send_file())
 send_file_btn.grid(row=2, column=2, padx=10)
-
 
 # END of SEND FRAME
 ##################################################################
