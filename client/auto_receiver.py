@@ -32,9 +32,9 @@ def create_receiver(request, frame):
         response = client.handle(request)
         unpack_response(constants.CMD_RECEIVE_FILE, response)
 
-        # request = create_request(constants.CMD_LIST)
-        # response = client.handle(request)
-        # unpack_response(constants.CMD_LIST, response)
+        request = create_request(constants.CMD_LIST)
+        response = client.handle(request)
+        unpack_response(constants.CMD_LIST, response)
 
 
 
@@ -79,11 +79,22 @@ def unpack_response_code(response: bytes) -> int:
 
 
 
+registered_users = []
 def list_cmd(response):
+    global registered_users
     response_content = response.decode(config.ENCODING)
     users = json.loads(response_content)
     user_list = users['user_list']
-    print(f'User list: {user_list}\n') 
+
+    if (len(registered_users) == 0):
+        registered_users = list(user_list)
+        return
+
+    for user in user_list:
+        if not (user in registered_users):
+            registered_users.append(user)
+
+    print(f'Registered users: {registered_users}\n')
 
 
 
