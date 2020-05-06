@@ -5,6 +5,23 @@ from client import Client
 import constants
 import config
 from tkinter import messagebox
+import struct
+import threading
+import auto_receiver
+
+
+def create_receiver(response, request):
+    response_code = struct.unpack('b', response)[0]
+    
+    if ((response_code == constants.CMD_LOGIN_OK_NEW) 
+        or (response_code == constants.CMD_LOGIN_OK)):
+        
+        # create new thread
+        receiver_thread = threading.Thread(target=auto_receiver.create_receiver, args=(request,))
+
+        # exit the receiver thread when the main thread terminates
+        receiver_thread.daemon = True
+        receiver_thread.start()
 
 
 root = Tk()
@@ -19,6 +36,8 @@ except ConnectionRefusedError as e:
     exit()
 
 
+##################################################################
+# LOGIN
 
 def login_cmd():
     login_val = login_entry.get()
@@ -35,13 +54,9 @@ def login_cmd():
         messagebox.showerror('Login Error', 'Please, try again!', parent=top_login)
         return
     
+    create_receiver(response, request)
     top_login.destroy()
 
-
-
-
-##################################################################
-# LOGIN
 
 top_login = Toplevel()
 top_login.title('Login/Register')
@@ -73,15 +88,3 @@ root.mainloop()
 
 
 
-# def create_receiver(response, request):
-#     response_code = struct.unpack('b', response)[0]
-    
-#     if ((response_code == constants.CMD_LOGIN_OK_NEW) 
-#         or (response_code == constants.CMD_LOGIN_OK)):
-        
-#         # create new thread
-#         receiver_thread = threading.Thread(target=auto_receiver.create_receiver, args=(request,))
-
-#         # exit the receiver thread when the main thread terminates
-#         receiver_thread.daemon = True
-#         receiver_thread.start()
