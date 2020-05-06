@@ -19,20 +19,20 @@ class Client:
         size_of_request = struct.pack('i', len(request))
 
         # send the request size first
-        sock.send(size_of_request)
+        self.sock.send(size_of_request)
         time.sleep(0.5)
 
         # send request
-        sock.send(request)
+        self.sock.send(request)
         time.sleep(0.5)
 
         # get size of server response
-        recv_size = sock.recv(4)
+        recv_size = self.sock.recv(4)
         # and unpack it
         recv_size = struct.unpack('i', recv_size)[0]
 
         # receive data from the server
-        response = sock.recv(recv_size)
+        response = self.sock.recv(recv_size)
         
         return response
 
