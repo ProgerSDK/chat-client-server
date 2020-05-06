@@ -14,7 +14,7 @@ class Client:
         self.sock.connect((host, port))
 
 
-    def handle(self, request):
+    def handle(self, request) -> bytes:
         # convert query size to bytes (int 4)
         size_of_request = struct.pack('i', len(request))
 
