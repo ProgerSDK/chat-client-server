@@ -8,9 +8,11 @@ import tkinter as tk
 from client import Client
 
 
-def create_receiver(request, frame):
+def create_receiver(request, frame, listbox):
     global messages_frame
     messages_frame = frame
+    global lbox
+    lbox = listbox
 
     try:
         client = Client()
@@ -78,7 +80,7 @@ def unpack_response_code(response: bytes) -> int:
     return response_code
 
 
-
+lbox = None
 registered_users = []
 def list_cmd(response):
     global registered_users
@@ -86,13 +88,22 @@ def list_cmd(response):
     users = json.loads(response_content)
     user_list = users['user_list']
 
+    is_changed = False
+
     if (len(registered_users) == 0):
         registered_users = list(user_list)
-        return
+        is_changed = True
+
+    if is_changed:
+        for user in registered_users:
+            lbox.insert(tk.END, user)
+        return    
 
     for user in user_list:
         if not (user in registered_users):
             registered_users.append(user)
+            lbox.insert(tk.END, user)
+    
 
     print(f'Registered users: {registered_users}\n')
 

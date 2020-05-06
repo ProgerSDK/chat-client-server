@@ -19,7 +19,7 @@ def create_receiver(response, request):
         or (response_code == constants.CMD_LOGIN_OK)):
         
         # create new thread
-        receiver_thread = threading.Thread(target=auto_receiver.create_receiver, args=(request, messages_frame))
+        receiver_thread = threading.Thread(target=auto_receiver.create_receiver, args=(request, messages_frame, lbox))
 
         # exit the receiver thread when the main thread terminates
         receiver_thread.daemon = True
@@ -86,7 +86,13 @@ button.grid(row=3, column=1, pady=20)
 # USERS FRAME
 
 frame_users = Frame(root, bg="green", width=130)
-frame_users.pack(anchor=W, fill=Y, expand=False, side=LEFT)  
+frame_users.pack(anchor=W, fill=Y, expand=False, side=LEFT) 
+
+lbl_users = Label(frame_users, text = "Registered Users:")
+lbl_users.pack(anchor=N)
+
+lbox = Listbox(frame_users, width=16, bg='green', bd='0')
+lbox.pack(anchor=W, fill=Y, side=LEFT)
 
 # END of USERS FRAME
 ##################################################################
