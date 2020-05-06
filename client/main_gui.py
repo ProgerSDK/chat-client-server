@@ -8,6 +8,7 @@ from tkinter import messagebox
 import struct
 import threading
 import auto_receiver
+from tkinter import filedialog
 
 
 def create_receiver(response, request):
@@ -26,8 +27,7 @@ def create_receiver(response, request):
 
 root = Tk()
 root.title('Chat client')
-root.geometry('480x400')
-
+root.geometry('500x400')
 
 try:
     client = Client()
@@ -103,7 +103,7 @@ content_frame.pack(anchor=N, fill=BOTH, expand=True, side=LEFT )
 ##################################################################
 # MESSAGES FRAME
 
-messages_frame = Frame(content_frame, bg="orange", height=300)
+messages_frame = Frame(content_frame, bg="orange", height=290)
 messages_frame.pack(anchor=N, fill=X, expand=True , side=TOP)
 
 # END of MESSAGES FRAME
@@ -113,8 +113,34 @@ messages_frame.pack(anchor=N, fill=X, expand=True , side=TOP)
 ##################################################################
 # SEND FRAME
 
-content_frame = Frame(content_frame, bg="white", height=180)
-content_frame.pack(anchor=S, fill=X, expand=True, side=TOP)
+send_frame = Frame(content_frame)
+send_frame.pack(anchor=S, fill=X, expand=True, side=TOP)
+
+Label(send_frame, text='To:').grid(row=0, pady=10, padx=10) 
+Label(send_frame, text='Message:').grid(row=1, padx=10)
+Label(send_frame, text='File:').grid(row=2, pady=10, padx=10) 
+receiver_entry = Entry(send_frame) 
+message_entry = Entry(send_frame) 
+file_entry = Entry(send_frame) 
+
+receiver_entry.grid(row=0, column=1, ipady=3) 
+message_entry.grid(row=1, column=1, ipady=3)
+
+send_msg_btn = Button(send_frame, text='Send')
+send_msg_btn.grid(row=1, column=2, padx=10)
+
+def sel_file():
+    send_frame.filename = filedialog.askopenfile(title='Select a file')
+    filepath = send_frame.filename.name
+    print(filepath)
+
+
+send_file_btn = Button(send_frame, text='Select a file', command=sel_file)
+send_file_btn.grid(row=2, column=1)
+
+send_file_btn = Button(send_frame, text='Send')
+send_file_btn.grid(row=2, column=2, padx=10)
+
 
 # END of SEND FRAME
 ##################################################################
