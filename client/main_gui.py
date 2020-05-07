@@ -277,13 +277,3 @@ send_file_btn.grid(row=2, column=2, padx=10)
 
 root.resizable(False, False)
 root.mainloop()
-
-
-
-
-
-
-
-
-
-
