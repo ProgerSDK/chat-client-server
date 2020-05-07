@@ -33,7 +33,7 @@ def create_receiver(request, frame, listbox):
         request = create_request(constants.CMD_LIST)
         response = client.handle(request)
         unpack_response(constants.CMD_LIST, response)
-        
+
         request = create_request(constants.CMD_RECEIVE_FILE)
         response = client.handle(request)
         unpack_response(constants.CMD_RECEIVE_FILE, response)
@@ -113,7 +113,7 @@ def list_cmd(response):
 messages_frame = None
 def print_in_messages(message_text):
     # msg_val = f'{msg["sender"]}:\n{msg["message"]}'
-    messageVar = tk.Message(messages_frame.scrollable_frame, text=message_text, width=320) 
+    messageVar = tk.Message(messages_frame.scrollable_frame, text=message_text, width=350) 
     # messageVar.config(bg='lightgreen') 
     messageVar.pack(anchor=tk.W, pady=2, padx=2)
     pass

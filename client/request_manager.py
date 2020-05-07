@@ -95,6 +95,9 @@ def msg(args=None):
         'receiver': receiver,
         'message': message
     }
+    if (len(receiver) == 0) or (len(message) == 0):
+        return get_request_code(constants.WRONG_PARAMS)
+
     request_json = json.dumps(msg_dict)
     request_args = bytearray(request_json, config.ENCODING)
     return request + request_args
@@ -115,6 +118,10 @@ def file_cmd(args=None):
         'filename': 'filename',
         'file_content': 'file_content'
     }
+
+    if (len(receiver) == 0) or (len(filepath) == 0):
+        return get_request_code(constants.WRONG_PARAMS)
+
     request_json = json.dumps(file_dict)
     request_args = bytearray(request_json, config.ENCODING)
     return request + request_args

@@ -8,7 +8,7 @@ from tkinter import messagebox
 import struct
 import threading
 import auto_receiver
-from tkinter import filedialog, ttk
+from tkinter import filedialog, ttk, font
 from additional_tkinter import ScrollableFrame
 
 
@@ -28,8 +28,9 @@ def create_receiver(response, request):
 
 root = Tk()
 root.title('Chat client')
-root.geometry('510x385')
+root.geometry('560x440')
 root['bg'] = 'black'
+root.option_add("*Font", "10")
 
 try:
     client = Client()
@@ -64,7 +65,7 @@ def login_cmd():
 top_login = Toplevel()
 top_login.title('Login/Register')
 top_login.attributes('-topmost', 'true')
-top_login.geometry('260x160')
+top_login.geometry('310x160')
 top_login.resizable(False, False)
 top_login.focus_force()
 
@@ -89,6 +90,7 @@ def select_user():
     try:
         clicked_item = lbox.curselection()[0]
         selected_username = lbox.get(clicked_item)
+        receiver_entry.delete(0, END)
         receiver_entry.insert(0, selected_username)
     except IndexError as e:
         messagebox.showinfo('Select user error', 'Select user first!')
@@ -98,13 +100,13 @@ def select_user():
 frame_users = Frame(root, bg="green", width=130)
 frame_users.pack(anchor=W, fill=Y, expand=False, side=LEFT) 
 
-lbl_users = Label(frame_users, text = "Registered Users:")
+lbl_users = Label(frame_users, text = "Registered Users", bg='green')
 lbl_users.pack(anchor=N)
 
-btn_sel_user = Button(frame_users, text='Select user', command=select_user)
-btn_sel_user.pack(anchor=S)
+btn_sel_user = Button(frame_users, text='Select user', command=select_user, bg='blue')
+btn_sel_user.pack(anchor=S, pady=5)
 
-lbox = Listbox(frame_users, width=16, bg='green', bd='0', )
+lbox = Listbox(frame_users, width=12, bg='green', bd='0', font=font.Font(size=14))
 lbox.pack(anchor=W, fill=Y, side=LEFT)
 
 # END of USERS FRAME
@@ -156,7 +158,7 @@ def send_msg():
         return
     
     msg_val = f'Me -> {receiver_val}:\n{message_val}'
-    messageVar = Message(messages_frame.scrollable_frame, text = msg_val, width=300) 
+    messageVar = Message(messages_frame.scrollable_frame, text = msg_val, width=350) 
     # messageVar.config(bg='lightgreen') 
     messageVar.pack(anchor=W, pady=2, padx=2)
 
@@ -219,7 +221,7 @@ send_file_btn.grid(row=2, column=2, padx=10)
 
 
 
-# root.resizable(False, False)
+root.resizable(False, False)
 root.mainloop()
 
 
