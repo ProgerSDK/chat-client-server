@@ -25,7 +25,6 @@ class RequestHandler(socketserver.BaseRequestHandler):
                 
                 # unpack size of user message
                 size_of_request = struct.unpack('i', size_of_request)[0]
-                debug_message(f'Size of message: {size_of_request}')
                 
                 # get user request message
                 message = self.request.recv(size_of_request)

@@ -13,8 +13,6 @@ def handle_command(message):
     except:
         return create_response(constants.SERVER_ERROR)
 
-    debug_message(f'Command: {command}')
-
     # get the function of a specific command
     cmd_func = select_command(command)
 
@@ -22,15 +20,11 @@ def handle_command(message):
     # if there is args of the command
     if (len(message) > 1):
         args = message[1:].decode(config.ENCODING)
-        debug_message(f'Content: {args}')
 
     try:
         response = cmd_func(args)
     except:
-        debug_message('Wrong command')
         response = create_response(constants.INCORRECT_COMMAND)
-
-    debug_message(f'authorized users: {users_data.AUTHORIZED_USERS}')
 
     return response
 
@@ -56,14 +50,12 @@ def select_command(command):
 
 
 def ping(args=None):
-    debug_message('ping')
     response_code = constants.CMD_PING_RESPONSE
     response = struct.pack('b', response_code)
     return response
 
 
 def echo(args=None):
-    debug_message('echo')
     if (args):
         response = bytearray(f'ECHO: {args}', config.ENCODING)
     else:
@@ -73,8 +65,6 @@ def echo(args=None):
 
 
 def login(args=None):
-    debug_message('login')
-    
     if not (args):
         return create_response(constants.WRONG_PARAMS)
         
@@ -121,8 +111,6 @@ def login(args=None):
 
 
 def logout(args=None):
-    debug_message('logout')
-
     # check if user is authorized
     for user in users_data.AUTHORIZED_USERS:
         if (threading.current_thread().native_id == user['id']):
@@ -135,8 +123,6 @@ def logout(args=None):
 
 
 def list_cmd(args=None):
-    debug_message('list')
-
     authorized = False
 
     # check if user is authorized
@@ -155,8 +141,6 @@ def list_cmd(args=None):
 
 
 def msg(args=None):
-    debug_message('msg')
-
     if not (args):
         return create_response(constants.WRONG_PARAMS)
 
@@ -182,14 +166,11 @@ def msg(args=None):
     # if authorized
     msg_data['sender'] = username
     users_data.USERS_MESSAGES.append(msg_data)
-    debug_message(f'messages: {users_data.USERS_MESSAGES}')
     return create_response(constants.CMD_MSG_SENT)
 
 
 
 def file_cmd(args=None):
-    debug_message('file')
-
     if not (args):
         return create_response(constants.WRONG_PARAMS)
 
@@ -216,7 +197,6 @@ def file_cmd(args=None):
     # if authorized
     file_data['sender'] = username
     users_data.USERS_FILES.append(file_data)
-    debug_message(f'files: {users_data.USERS_FILES}')
     return create_response(constants.CMD_FILE_SENT)
 
 
@@ -277,8 +257,6 @@ def recv_file(args=None):
     if not authorized:
         return create_response(constants.LOGIN_FIRST)
 
-    debug_message('here')
-
     # if authorized
     # check if there is new files
     file_msg = None
@@ -289,8 +267,6 @@ def recv_file(args=None):
             users_data.USERS_FILES.remove(file_dict)
             new_file = True
             break
-
-    debug_message('here1')
 
     if (new_file):
         response_json = json.dumps(file_msg)
