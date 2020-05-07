@@ -82,6 +82,9 @@ def login(args=None):
     if not (('login' in userdata) and ('password' in userdata)):
         return create_response(constants.WRONG_PARAMS)
 
+    if (len(userdata['login']) == 0) or (len(userdata['password']) == 0):
+        return create_response(constants.WRONG_PARAMS)
+
     registered = False
     auth_success = False
 
