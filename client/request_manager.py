@@ -2,6 +2,8 @@ import constants
 import struct
 import config
 import json
+import base64
+import os
 
 
 def create_request(command: dict) -> bytes:
@@ -112,19 +114,33 @@ def file_cmd(args=None):
         filepath = args[1]
     except:
         return get_request_code(constants.WRONG_PARAMS)
+    
+    if (len(receiver) == 0) or (len(filepath) == 0):
+        return get_request_code(constants.WRONG_PARAMS)
+
+    filename = None
+    with open(filepath) as f:
+        filename = os.path.basename(f.name)
+
+    file_content = str(encode_file(filepath))
 
     file_dict = {
         'receiver': receiver,
-        'filename': 'filename',
-        'file_content': 'file_content'
+        'filename': filename,
+        'file_content': file_content
     }
-
-    if (len(receiver) == 0) or (len(filepath) == 0):
-        return get_request_code(constants.WRONG_PARAMS)
 
     request_json = json.dumps(file_dict)
     request_args = bytearray(request_json, config.ENCODING)
     return request + request_args
+
+
+def encode_file(filepath):
+    with open(filepath) as f:
+        data = f.read()
+        bytes_data = bytes(data, config.ENCODING)
+        encoded = base64.b64encode(bytes_data)
+        return encoded
 
 
 

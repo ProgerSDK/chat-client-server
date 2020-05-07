@@ -143,5 +143,5 @@ def recv_file(response):
     response_content = response.decode(config.ENCODING)
     file_msg = json.loads(response_content)
     
-    msg_val = f'{file_msg["sender"]}:\nSent a {file_msg["filename"]} file.'
+    msg_val = f'{file_msg["sender"]}:\nSent a "{file_msg["filename"]}" file.'
     print_in_messages(msg_val)

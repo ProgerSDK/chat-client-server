@@ -10,6 +10,7 @@ import threading
 import auto_receiver
 from tkinter import filedialog, ttk, font
 from additional_tkinter import ScrollableFrame
+import os
 
 
 def create_receiver(response, request):
@@ -187,6 +188,14 @@ def send_file():
     if is_error(response):
         return
 
+    filename = None
+    with open(filepath_val) as f:
+        filename = os.path.basename(f.name)
+
+    msg_val = f'Me -> {receiver_val}:\nSent a "{filename}" file.'
+    messageVar = Message(messages_frame.scrollable_frame, text = msg_val, width=350) 
+    messageVar.pack(anchor=W, pady=2, padx=2)
+
     receiver_entry.delete(0, END)
 
 
@@ -217,7 +226,7 @@ def sel_file():
 select_file_btn = Button(send_frame, text='Select a file', command=sel_file)
 select_file_btn.grid(row=2, column=1)
 
-send_file_btn = Button(send_frame, text='Send', command=lambda: send_file())
+send_file_btn = Button(send_frame, text='Send', command=send_file)
 send_file_btn.grid(row=2, column=2, padx=10)
 
 # END of SEND FRAME
