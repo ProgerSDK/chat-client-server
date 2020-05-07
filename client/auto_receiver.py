@@ -6,6 +6,7 @@ import json
 import socket
 import tkinter as tk
 from client import Client
+import base64
 
 
 def create_receiver(request, frame, listbox):
@@ -119,13 +120,7 @@ def print_in_messages(message_text):
     pass
 
 
-def recv_msg(response):
-    # if (len(response) == 1):
-    #     response_code = unpack_response_code(response)
-    #     if (response_code == constants.CMD_RECEIVE_MSG_EMPTY):
-    #         print('No messages.\n')
-    #         return
-    
+def recv_msg(response):    
     response_content = response.decode(config.ENCODING)
     msg = json.loads(response_content)
 
@@ -133,15 +128,17 @@ def recv_msg(response):
     print_in_messages(msg_val)
 
 
-def recv_file(response):
-    # if (len(response) == 1):
-    #     response_code = unpack_response_code(response)
-    #     if (response_code == constants.CMD_RECEIVE_FILE_EMPTY):
-    #         print('No files waiting.\n')
-    #         return
-    
+def recv_file(response):    
     response_content = response.decode(config.ENCODING)
     file_msg = json.loads(response_content)
-    
-    msg_val = f'{file_msg["sender"]}:\nSent a "{file_msg["filename"]}" file.'
+    sender = file_msg['sender']
+    filename = file_msg['filename']
+
+    msg_val = f'{sender}:\nSent a "{filename}" file.'
     print_in_messages(msg_val)
+
+    file_content = file_msg['file_content']
+    print(file_content)
+
+    with open(filename, "w") as f:
+        f.write(file_content)

@@ -122,7 +122,7 @@ def file_cmd(args=None):
     with open(filepath) as f:
         filename = os.path.basename(f.name)
 
-    file_content = str(encode_file(filepath))
+    file_content = read_file(filepath)
 
     file_dict = {
         'receiver': receiver,
@@ -135,12 +135,10 @@ def file_cmd(args=None):
     return request + request_args
 
 
-def encode_file(filepath):
+def read_file(filepath):
     with open(filepath) as f:
         data = f.read()
-        bytes_data = bytes(data, config.ENCODING)
-        encoded = base64.b64encode(bytes_data)
-        return encoded
+        return data
 
 
 
