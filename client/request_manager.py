@@ -36,13 +36,11 @@ def select_command(cmd_code: int):
 
 
 def ping(args=None):
-    print('ping')
     request = get_request_code(constants.CMD_PING)
     return request
 
 
 def echo(args=None):
-    print('echo')
     request = get_request_code(constants.CMD_ECHO)
     
     if (args):
@@ -53,7 +51,6 @@ def echo(args=None):
 
 
 def login(args=None):
-    print('login')
     request = get_request_code(constants.CMD_LOGIN)
 
     try:
@@ -72,19 +69,16 @@ def login(args=None):
 
 
 def logout(args=None):
-    print('logout')
     request = get_request_code(constants.CMD_LOGOUT)
     return request 
 
 
 def list_cmd(args=None):
-    print('list')
     request = get_request_code(constants.CMD_LIST)
     return request
 
 
 def msg(args=None):
-    print('msg')
     request = get_request_code(constants.CMD_MSG)
     
     try:
@@ -106,7 +100,6 @@ def msg(args=None):
 
 
 def file_cmd(args=None):
-    print('file')
     request = get_request_code(constants.CMD_FILE)
     
     try:
@@ -149,13 +142,11 @@ def get_request_code(code: int) -> bytes:
 
 
 def recv_msg(args=None):
-    print('receive msg')
     request = get_request_code(constants.CMD_RECEIVE_MSG)
     return request
 
 
 
 def recv_file(args=None):
-    print('receive file')
     request = get_request_code(constants.CMD_RECEIVE_FILE)
     return request

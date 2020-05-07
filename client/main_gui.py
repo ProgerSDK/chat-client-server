@@ -105,7 +105,6 @@ def create_top_login():
         response = client.handle(request)
         
         if is_error(response, top_login):
-            # messagebox.showerror('Login Error', 'Please, try again!', parent=top_login)
             return
         
         create_receiver(response, request)
@@ -177,11 +176,7 @@ content_frame.pack(anchor=N, fill=BOTH, expand=True, side=LEFT )
 ##################################################################
 # MESSAGES FRAME
 
-# messages_frame = Frame(content_frame, bg="white", height=290, width=360)
-# messages_frame.pack(anchor=N, side=TOP, pady=5, padx=5)
-
 messages_frame = ScrollableFrame(content_frame)
-# messages_frame.config(bg='orange')
 messages_frame.pack(anchor=N, side=TOP, pady=5)
 
 # END of MESSAGES FRAME
@@ -210,7 +205,6 @@ def send_msg():
     
     msg_val = f'Me -> {receiver_val}:\n{message_val}'
     messageVar = Message(messages_frame.scrollable_frame, text = msg_val, width=350) 
-    # messageVar.config(bg='lightgreen') 
     messageVar.pack(anchor=W, pady=2, padx=2)
 
     receiver_entry.delete(0, END)
@@ -269,7 +263,6 @@ def sel_file():
     global filepath_val
     send_frame.filename = filedialog.askopenfile(title='Select a file') 
     filepath_val = send_frame.filename.name
-    print(filepath_val)
 
 
 select_file_btn = Button(send_frame, text='Select a file', command=sel_file)
@@ -280,7 +273,6 @@ send_file_btn.grid(row=2, column=2, padx=10)
 
 # END of SEND FRAME
 ##################################################################
-
 
 
 root.resizable(False, False)

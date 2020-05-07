@@ -41,7 +41,6 @@ def create_receiver(request, frame, listbox):
 
 
 
-
 def create_request(cmd_code: int) -> bytes:
     request = get_request_code(cmd_code)
     return request
@@ -105,17 +104,12 @@ def list_cmd(response):
         if not (user in registered_users):
             registered_users.append(user)
             lbox.insert(tk.END, user)
-    
-
-    print(f'Registered users: {registered_users}\n')
 
 
 
 messages_frame = None
 def print_in_messages(message_text):
-    # msg_val = f'{msg["sender"]}:\n{msg["message"]}'
     messageVar = tk.Message(messages_frame.scrollable_frame, text=message_text, width=350) 
-    # messageVar.config(bg='lightgreen') 
     messageVar.pack(anchor=tk.W, pady=2, padx=2)
     pass
 
@@ -138,7 +132,6 @@ def recv_file(response):
     print_in_messages(msg_val)
 
     file_content = file_msg['file_content']
-    print(file_content)
 
     with open(filename, "w") as f:
         f.write(file_content)
