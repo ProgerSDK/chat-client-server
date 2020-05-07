@@ -61,10 +61,18 @@ class ThreadedTCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
 
 
 if __name__ == '__main__':
-    host = config.HOST
-    port = config.PORT
+    print('Enter server settings. If the settings are incorrect, the server will start at default.')
+    try:
+        host = input('Enter HOST: ')
+        port_val = input('Enter PORT: ')
+        port = int(port_val)
+        server = ThreadedTCPServer((host, port), RequestHandler)
+    except:
+        host = config.HOST
+        port = config.PORT
+        server = ThreadedTCPServer((host, port), RequestHandler)
 
-    server = ThreadedTCPServer((host, port), RequestHandler)
+    print(f'Server started on: {host}:{port}')
     with server:    
         # Start a thread with the server -- that thread will then start one
         # more thread for each request
