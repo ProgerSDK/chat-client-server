@@ -30,8 +30,12 @@ def create_receiver(response, request):
 root = Tk()
 root.title('Chat client')
 root.geometry('560x440')
-root['bg'] = 'black'
-root.option_add("*Font", "10")
+root.option_add("*Font", "Helvetica 11")
+root.config(background="#2D2D44")
+root.option_add("*selectBackground", "white")
+root.option_add("*selectForeground", "#1E1E2C")
+root.option_add("*Button.Background", "#1E1E2C")
+root.option_add("*Button.Foreground", "white")
 
 try:
     client = Client()
@@ -63,15 +67,15 @@ def login_cmd():
     top_login.destroy()
 
 
-top_login = Toplevel()
+top_login = Toplevel(bg='#2D2D44')
 top_login.title('Login/Register')
 top_login.attributes('-topmost', 'true')
 top_login.geometry('310x160')
 top_login.resizable(False, False)
 top_login.focus_force()
 
-Label(top_login, text='Login:').grid(row=0, pady=20, padx=5) 
-Label(top_login, text='Password:').grid(row=1,padx=5) 
+Label(top_login, text='Login:', bg='#2D2D44', fg='white').grid(row=0, pady=20, padx=10) 
+Label(top_login, text='Password:', bg='#2D2D44', fg='white').grid(row=1,padx=10) 
 login_entry = Entry(top_login) 
 pass_entry = Entry(top_login, show="*") 
 login_entry.grid(row=0, column=1, columnspan=2) 
@@ -98,16 +102,16 @@ def select_user():
         return
 
 
-frame_users = Frame(root, bg="green", width=130)
+frame_users = Frame(root, bg="#2D2D44", width=130)
 frame_users.pack(anchor=W, fill=Y, expand=False, side=LEFT) 
 
-lbl_users = Label(frame_users, text = "Users List", bg='green')
+lbl_users = Label(frame_users, text = "Users List", bg='#2D2D44', fg="white")
 lbl_users.pack(anchor=N)
 
-btn_sel_user = Button(frame_users, text='Select user', command=select_user, bg='blue')
+btn_sel_user = Button(frame_users, text='Select user', command=select_user)
 btn_sel_user.pack(anchor=S, pady=5)
 
-lbox = Listbox(frame_users, width=12, bg='green', bd='0', font=font.Font(size=14))
+lbox = Listbox(frame_users, width=12, bg='#2D2D44', bd='0', font=font.Font(size=14), fg='white', highlightbackground='#1E1E2C')
 lbox.pack(anchor=W, fill=Y, side=LEFT)
 
 # END of USERS FRAME
@@ -117,7 +121,7 @@ lbox.pack(anchor=W, fill=Y, side=LEFT)
 ##################################################################
 # CONTENT FRAME
 
-content_frame = Frame(root, bg="orange")
+content_frame = Frame(root, bg="#2D2D44")
 content_frame.pack(anchor=N, fill=BOTH, expand=True, side=LEFT )
 
 # END of CONTENT FRAME
@@ -199,12 +203,12 @@ def send_file():
     receiver_entry.delete(0, END)
 
 
-send_frame = Frame(content_frame)
+send_frame = Frame(content_frame, bg='#2D2D44')
 send_frame.pack(anchor=S, fill=X, expand=True, side=TOP)
 
-Label(send_frame, text='To:').grid(row=0, pady=10, padx=10) 
-Label(send_frame, text='Message:').grid(row=1, padx=10)
-Label(send_frame, text='File:').grid(row=2, pady=10, padx=10) 
+Label(send_frame, text='To:', bg='#2D2D44', fg='white').grid(row=0, pady=10, padx=10) 
+Label(send_frame, text='Message:', bg='#2D2D44', fg='white').grid(row=1, padx=10)
+Label(send_frame, text='File:', bg='#2D2D44', fg='white').grid(row=2, pady=10, padx=10) 
 receiver_entry = Entry(send_frame) 
 message_entry = Entry(send_frame) 
 file_entry = Entry(send_frame) 
