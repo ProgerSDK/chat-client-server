@@ -30,13 +30,14 @@ def create_receiver(request, frame, listbox):
         response = client.handle(request)
         unpack_response(constants.CMD_RECEIVE_MSG, response)
 
+        request = create_request(constants.CMD_LIST)
+        response = client.handle(request)
+        unpack_response(constants.CMD_LIST, response)
+        
         request = create_request(constants.CMD_RECEIVE_FILE)
         response = client.handle(request)
         unpack_response(constants.CMD_RECEIVE_FILE, response)
 
-        request = create_request(constants.CMD_LIST)
-        response = client.handle(request)
-        unpack_response(constants.CMD_LIST, response)
 
 
 

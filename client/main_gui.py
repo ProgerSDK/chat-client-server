@@ -85,13 +85,26 @@ button.grid(row=3, column=1, pady=20)
 ##################################################################
 # USERS FRAME
 
+def select_user():
+    try:
+        clicked_item = lbox.curselection()[0]
+        selected_username = lbox.get(clicked_item)
+        receiver_entry.insert(0, selected_username)
+    except IndexError as e:
+        messagebox.showinfo('Select user error', 'Select user first!')
+        return
+
+
 frame_users = Frame(root, bg="green", width=130)
 frame_users.pack(anchor=W, fill=Y, expand=False, side=LEFT) 
 
 lbl_users = Label(frame_users, text = "Registered Users:")
 lbl_users.pack(anchor=N)
 
-lbox = Listbox(frame_users, width=16, bg='green', bd='0')
+btn_sel_user = Button(frame_users, text='Select user', command=select_user)
+btn_sel_user.pack(anchor=S)
+
+lbox = Listbox(frame_users, width=16, bg='green', bd='0', )
 lbox.pack(anchor=W, fill=Y, side=LEFT)
 
 # END of USERS FRAME
