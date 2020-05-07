@@ -67,6 +67,8 @@ def enter_ip():
         return
 
     connect_to_server(host, port)
+    config.HOST = host
+    config.PORT = port
     top_ip.destroy()
     create_top_login()
 

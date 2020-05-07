@@ -19,7 +19,7 @@ def create_receiver(request, frame, listbox):
         client = Client()
         client.connect(config.HOST, config.PORT)
     except ConnectionRefusedError as e:
-        tk.messagebox.showerror('Connection Refused', 'Run server first!')
+        tk.messagebox.showerror('Connection Error', 'Wrong params or server is shutdown!')
         exit()
 
     # login to server
