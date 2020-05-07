@@ -37,52 +37,95 @@ root.option_add("*selectForeground", "#1E1E2C")
 root.option_add("*Button.Background", "#1E1E2C")
 root.option_add("*Button.Foreground", "white")
 
-try:
-    client = Client()
-    client.connect(config.HOST, config.PORT)
-except ConnectionRefusedError as e:
-    messagebox.showerror('Connection Refused', 'Run server first!')
-    exit()
+
+client = None
+def connect_to_server(host, port):
+    global client
+    try:
+        client = Client()
+        client.connect(host, port)
+    except ConnectionRefusedError as e:
+        messagebox.showerror('Connection Error', 'Wrong params or server is shutdown!')
+        exit()
 
 
 ##################################################################
 # LOGIN
 
-def login_cmd():
-    login_val = login_entry.get()
-    pass_val = pass_entry.get()
+def enter_ip():
+    host = host_entry.get()
+    port_val = port_entry.get()
 
-    cmd_dict = {
-        'cmd_code': constants.CMD_LOGIN,
-        'args': [login_val, pass_val]
-    }
-    request = create_request(cmd_dict)
-    response = client.handle(request)
-    
-    if is_error(response, top_login):
-        # messagebox.showerror('Login Error', 'Please, try again!', parent=top_login)
+    if len(host) == 0 or len(port_val) == 0:
+        messagebox.showinfo('Empty fields', 'Enter parameters!')
         return
-    
-    create_receiver(response, request)
-    top_login.destroy()
+
+    try:
+        port = int(port_val)
+    except:
+        messagebox.showinfo('Wrong port', 'The port must be a number!')
+        return
+
+    connect_to_server(host, port)
+    top_ip.destroy()
+    create_top_login()
 
 
-top_login = Toplevel(bg='#2D2D44')
-top_login.title('Login/Register')
-top_login.attributes('-topmost', 'true')
-top_login.geometry('310x160')
-top_login.resizable(False, False)
-top_login.focus_force()
+top_ip = Toplevel(bg='#2D2D44')
+top_ip.title('Enter IP/PORT')
+top_ip.attributes('-topmost', 'true')
+top_ip.geometry('280x160')
+top_ip.resizable(False, False)
+top_ip.focus_force()
 
-Label(top_login, text='Login:', bg='#2D2D44', fg='white').grid(row=0, pady=20, padx=10) 
-Label(top_login, text='Password:', bg='#2D2D44', fg='white').grid(row=1,padx=10) 
-login_entry = Entry(top_login) 
-pass_entry = Entry(top_login, show="*") 
-login_entry.grid(row=0, column=1, columnspan=2) 
-pass_entry.grid(row=1, column=1, columnspan=2) 
+Label(top_ip, text='Host:', bg='#2D2D44', fg='white').grid(row=0, pady=20, padx=10) 
+Label(top_ip, text='Port:', bg='#2D2D44', fg='white').grid(row=1,padx=10) 
+host_entry = Entry(top_ip) 
+port_entry = Entry(top_ip) 
+host_entry.grid(row=0, column=1, columnspan=2) 
+port_entry.grid(row=1, column=1, columnspan=2) 
 
-button = Button(top_login, text='Login', command=login_cmd) 
-button.grid(row=3, column=1, pady=20) 
+btn_enter_ip = Button(top_ip, text='Connect', command=enter_ip) 
+btn_enter_ip.grid(row=3, column=1, pady=20)
+
+
+def create_top_login():
+
+    def login_cmd():
+        login_val = login_entry.get()
+        pass_val = pass_entry.get()
+
+        cmd_dict = {
+            'cmd_code': constants.CMD_LOGIN,
+            'args': [login_val, pass_val]
+        }
+        request = create_request(cmd_dict)
+        response = client.handle(request)
+        
+        if is_error(response, top_login):
+            # messagebox.showerror('Login Error', 'Please, try again!', parent=top_login)
+            return
+        
+        create_receiver(response, request)
+        top_login.destroy()
+
+
+    top_login = Toplevel(bg='#2D2D44')
+    top_login.title('Login/Register')
+    top_login.attributes('-topmost', 'true')
+    top_login.geometry('310x160')
+    top_login.resizable(False, False)
+    top_login.focus_force()
+
+    Label(top_login, text='Login:', bg='#2D2D44', fg='white').grid(row=0, pady=20, padx=10) 
+    Label(top_login, text='Password:', bg='#2D2D44', fg='white').grid(row=1,padx=10) 
+    login_entry = Entry(top_login) 
+    pass_entry = Entry(top_login, show="*") 
+    login_entry.grid(row=0, column=1, columnspan=2) 
+    pass_entry.grid(row=1, column=1, columnspan=2) 
+
+    button = Button(top_login, text='Login', command=login_cmd) 
+    button.grid(row=3, column=1, pady=20) 
 
 # END of LOGIN
 ##################################################################
