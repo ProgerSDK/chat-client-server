@@ -76,7 +76,7 @@ def enter_ip():
 top_ip = Toplevel(bg='#2D2D44')
 top_ip.title('Enter IP/PORT')
 top_ip.attributes('-topmost', 'true')
-top_ip.geometry('280x160')
+top_ip.geometry('250x160')
 top_ip.resizable(False, False)
 top_ip.focus_force()
 
