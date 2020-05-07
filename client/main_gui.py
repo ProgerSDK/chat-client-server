@@ -54,8 +54,8 @@ def login_cmd():
     request = create_request(cmd_dict)
     response = client.handle(request)
     
-    if is_error(response):
-        messagebox.showerror('Login Error', 'Please, try again!', parent=top_login)
+    if is_error(response, top_login):
+        # messagebox.showerror('Login Error', 'Please, try again!', parent=top_login)
         return
     
     create_receiver(response, request)
@@ -100,7 +100,7 @@ def select_user():
 frame_users = Frame(root, bg="green", width=130)
 frame_users.pack(anchor=W, fill=Y, expand=False, side=LEFT) 
 
-lbl_users = Label(frame_users, text = "Registered Users", bg='green')
+lbl_users = Label(frame_users, text = "Users List", bg='green')
 lbl_users.pack(anchor=N)
 
 btn_sel_user = Button(frame_users, text='Select user', command=select_user, bg='blue')
@@ -151,10 +151,11 @@ def send_msg():
         'args': [receiver_val, message_val]
     }
     request = create_request(cmd_dict)
+    if is_error(request):
+        return
+
     response = client.handle(request)
-    
     if is_error(response):
-        messagebox.showerror('Sent Message Error', 'Please, try again!', parent=root)
         return
     
     msg_val = f'Me -> {receiver_val}:\n{message_val}'
@@ -167,9 +168,10 @@ def send_msg():
 
 
 def send_file():
+    global filepath_val
     receiver_val = receiver_entry.get()
     if not filepath_val:
-        messagebox.showerror('Error sent file!', 'Select a file!')
+        messagebox.showinfo('File not found!', 'Select a file!')
         return
 
     cmd_dict = {
@@ -177,10 +179,12 @@ def send_file():
         'args': [receiver_val, filepath_val]
     }
     request = create_request(cmd_dict)
+    if is_error(request):
+        return
+
     response = client.handle(request)
     
     if is_error(response):
-        messagebox.showerror('Sent Message Error', 'Please, try again!', parent=root)
         return
 
     receiver_entry.delete(0, END)

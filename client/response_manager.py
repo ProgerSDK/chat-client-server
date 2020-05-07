@@ -2,9 +2,10 @@ import constants
 import struct
 import config
 import json
+import tkinter as tk
 
 
-def is_error(response: bytes) -> bool:
+def is_error(response: bytes, parent=None) -> bool:
     if len(response) > 1:
         return False
 
@@ -13,7 +14,7 @@ def is_error(response: bytes) -> bool:
             constants.SERVER_ERROR: 'Server error!',
             # constants.INCORRECT_CONTENT_SIZE: 'Incorrect content size!',
             constants.SERIALIZATION_ERROR: 'Serialization error!',
-            constants.INCORRECT_COMMAND: 'Incorrect command',
+            constants.INCORRECT_COMMAND: 'Incorrect command!',
             constants.WRONG_PARAMS: 'Wrong params!',
             constants.LOGIN_WRONG_PASSWORD: 'Login wrong password!',
             constants.LOGIN_FIRST: 'Login first!',
@@ -24,6 +25,10 @@ def is_error(response: bytes) -> bool:
     error = switcher.get(response_code, -1)
     if (error != -1):
         print(error)
+        if (parent):
+            tk.messagebox.showerror('Error', f'{error}\nPlease, try again.', parent=parent)
+        else:    
+            tk.messagebox.showerror('Error', f'{error}\nPlease, try again.')
         return True
     else:
         return False
